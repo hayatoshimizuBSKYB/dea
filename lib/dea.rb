@@ -54,6 +54,12 @@ config['config_file'] = File.expand_path(config['config_file'])
 EM.epoll
 
 EM.run {
+  begin
+    sv, $-v = $-v, nil
+    NATS::MAX_RECONNECT_ATTEMPTS = 3600 # 2 hours total
+    NATS::RECONNECT_TIME_WAIT    = 2    # 2 secs
+    $-v = sv
+  end
   agent = DEA::Agent.new(config)
   agent.run()
 }
